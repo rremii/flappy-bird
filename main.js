@@ -1,5 +1,11 @@
 
-import {drawService} from "./drawService.js";
+import {drawService} from "./services/drawService.js";
+import {CreateParallelepiped} from "./entities/fabrics.js";
+import {Bird} from "./entities/bird/bird.js";
+import {Ellipse} from "./entities/Ellipse.js";
+
+
+
 
 const canvas = document.querySelector("#canvas");
 const ctx = canvas?.getContext("2d");
@@ -57,8 +63,11 @@ scoreElement.style.top = "35px";
 scoreElement.style.transform = "translate(-50%, -50%)";
 document.body.appendChild(scoreElement);
 
+const bird = new Bird()
 // Create the bird object
-const bird = {
+
+
+const birdQWE = {
     x: 50,
     y: canvas.height / 2,
     width: 42,
@@ -71,11 +80,17 @@ const bird = {
         this.y += this.speed;
     },
     draw: function() {
+
+        // bird1.shift(this.x + this.width / 2,this.y + this.height / 2)
+        // bird1.shift(50,100)
+
         // Rotate the bird up when it goes up
         if (this.speed < 0) {
             ctx.save();
             ctx.translate(this.x + this.width / 2, this.y + this.height / 2);
             ctx.rotate(-Math.PI / 16);
+
+            bird1.draw((this.x + this.width / 2) ,(this.y + this.height / 2) )
 
             // bird flap animation
             if (birdImageframe % 3 === 0) {
@@ -96,6 +111,8 @@ const bird = {
             ctx.translate(this.x + this.width / 2, this.y + this.height / 2);
             ctx.rotate(Math.PI / 16);
             // ctx.drawImage(birdImg1, -this.width / 2, -this.height / 2, this.width, this.height);
+
+            bird1.draw((this.x + this.width / 2) ,(this.y + this.height / 2) )
 
             // bird flap animation
             if (birdImageframe % 3 === 0) {
@@ -196,8 +213,11 @@ const gameLoop = function() {
 
     if (!running) return;
 
-    bird.update();
-    bird.draw();
+    // bird.update();
+    // bird.draw();
+    bird.update()
+    bird.draw()
+
 
     // Draw and update pipes
     for (let i = 0; i < pipes.length; i++) {
@@ -297,134 +317,35 @@ const gameLoop = function() {
         bird.speed = 0;
     }
 
-    parallelepiped.draw()
+
+
+
     requestAnimationFrame(gameLoop);
 
 };
 
 gameLoop();
 
-class Point {
-    x = 0
-    y = 0
-
-    constructor(x,y) {
-        this.x = x
-        this.y = y
-    }
-}
-
-class Polygon {
-    points = []
-    bgColor = 'red'
-    borderColor = 'green'
-
-    constructor(points, {shiftX = 0, shiftY = 0, bgColor = 'red', borderColor = 'green'}) {
-        this.points = points.map((point)=>{
-            return {
-                x: point.x + shiftX,
-                y: point.y + shiftY
-            }
-        })
-        this.bgColor = bgColor
-        this.borderColor = borderColor
-    }
-    fill(){
-        ctx.beginPath()
-
-        ctx.moveTo(this.points[0].x,this.points[0].y)
-        this.points.forEach((point,index)=>{
-            if (this.points.length < 3) return
-            if (index === 0){
-            }else {
-                const x2 = point.x
-                const y2 = point.y
-                ctx.lineTo(x2,y2)
-            }
-        })
-        ctx.lineWidth = 1
-        ctx.strokeStyle = this.borderColor;
-        ctx.closePath()
-        ctx.fillStyle = this.bgColor
-        ctx.fill()
-        ctx.stroke()
-    }
-    draw(){
-        const length = this.points.length
-        this.points.forEach((point,index)=>{
-            if (length < 3) return
-            if (index === 0){
-                const x1 = point.x
-                const y1 = point.y
-                const x2 = this.points.at(-1).x
-                const y2 = this.points.at(-1).y
-                drawService.drawLine(x1,y1,x2,y2,"red")
-            }else {
-                const x1 = this.points[index-1].x
-                const y1 = this.points[index-1].y
-                const x2 = point.x
-                const y2 = point.y
-                drawService.drawLine(x1,y1,x2,y2,"red")
-            }
-        })
-
-    }
-}
-
-class Polyhedron {
-
-    polygons = []
-    constructor(polygons) {
-        this.polygons = polygons
-    }
-
-    draw(){
-        this.polygons.forEach((polygon)=>{
-            // polygon.draw()
-            polygon.fill()
-        })
-    }
-
-}
 
 
 
-const CreateRect = (width,height, {shiftX = 0, shiftY = 0, bgColor, borderColor}) =>{
-    const point1 = new Point(0 ,0 )
-    const point2 = new Point(width ,0 )
-    const point3 = new Point(width ,height )
-    const point4 = new Point(0 ,height )
-
-    return new Polygon([point1,point2,point3,point4], {shiftX, shiftY, bgColor, borderColor})
-}
-
-const CreateParallelepiped = (width,height,depth, {bgColor, borderColor}) =>{
-
-
-    const rect1 = CreateRect(width,height, { bgColor, borderColor})
-    const rect2 = CreateRect(width,height,{shiftX:depth, shiftY:depth, bgColor, borderColor})
 
 
 
-    const rect3 = new Polygon([
-        new Point(0,0),
-        new Point(width,0),
-        new Point(width + depth,depth),
-        new Point(depth,depth)
-    ],{ bgColor, borderColor})
 
-    const rect4 = new Polygon([
-        new Point(0,0),
-        new Point(depth,depth),
-        new Point(depth,height + depth),
-        new Point(0,height)
-    ],{ bgColor, borderColor})
+// const parallelepiped = CreateParallelepiped(100,50,20, {bgColor:"yellow",borderColor:'black'})
 
 
-    return new Polyhedron([rect1,rect2,rect3,rect4])
-}
-
-const parallelepiped = CreateParallelepiped(100,50,20, {bgColor:"yellow",borderColor:'black'})
+bird.draw(0,0)
 
 
-parallelepiped.draw()
+
+// parallelepiped.draw(100,50)
+
+// ctx.beginPath();
+// ctx.ellipse(100, 100, 25, 75, Math.PI * 0.5 , 0, 2 * Math.PI);
+// ctx.stroke();
+
+// drawService.drawCircle(50,50,50,'red')
+
+
