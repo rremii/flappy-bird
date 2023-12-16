@@ -1,15 +1,16 @@
 import {drawService} from "../services/drawService.js";
+
 const ctx = document.querySelector('#canvas')?.getContext('2d')
 
 export class Ellipse {
 
     initialCenter = {
-        x:0,
-        y:0
+        x: 0,
+        y: 0
     }
     center = {
-        x:0,
-        y:0
+        x: 0,
+        y: 0
     }
 
     radiusX = 0
@@ -19,13 +20,13 @@ export class Ellipse {
     // bgColor = 'red'
     borderColor = 'green'
 
-    constructor(radiusX,radiusY, {shiftX = 0, shiftY = 0, borderColor = 'green'}) {
+    constructor(radiusX, radiusY, {shiftX = 0, shiftY = 0, borderColor = 'green'}) {
         this.radiusX = radiusX
         this.radiusY = radiusY
 
         this.initialCenter = {
-            x:shiftX,
-            y:shiftY,
+            x: shiftX,
+            y: shiftY,
         }
 
         // this.bgColor = bgColor
@@ -43,10 +44,17 @@ export class Ellipse {
     //     }))
     // }
 
-    shift(x=0,y=0){
+    shift(x = 0, y = 0, angleGrad = 0) {
+
+
+        const angle = Math.PI / 180 * angleGrad
+        let rotatedX = this.initialCenter.x * Math.cos(angle) - this.initialCenter.y * Math.sin(angle)
+        let rotatedY = this.initialCenter.x * Math.sin(angle) + this.initialCenter.y * Math.cos(angle)
+
+
         this.center = {
-            x:this.initialCenter.x + x,
-            y:this.initialCenter.y + y
+            x: rotatedX + x,
+            y: rotatedY + y
         }
     }
 
@@ -70,10 +78,10 @@ export class Ellipse {
     //     ctx.fill()
     //     ctx.stroke()
     // }
-    draw(x = 0,y = 0){
-        const {x:cx,y:cy} = this.center
+    draw(x = 0, y = 0) {
+        const {x: cx, y: cy} = this.center
 
-        drawService.drawEllipse(this.radiusX,this.radiusY,x + cx, y + cy,this.borderColor)
+        drawService.drawEllipse(this.radiusX, this.radiusY, x + cx, y + cy, this.borderColor)
 
     }
 }

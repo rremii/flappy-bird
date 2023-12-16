@@ -3,19 +3,22 @@ const ctx = document.querySelector('#canvas')?.getContext('2d')
 
 class DrawService {
 
-    drawPoint = (x, y, color = 'green',size = 1) => {
+    drawPoint = (x, y, {color = 'green', size = 1, angleGrad = 0}) => {
+
+        const angle = Math.PI / 180 * angleGrad
+        let rotatedX = x * Math.cos(angle) - y * Math.sin(angle)
+        let rotatedY = x * Math.sin(angle) + y * Math.cos(angle)
+
+
         if (!ctx) return
         ctx.beginPath();
         ctx.fillStyle = color;
-        ctx.fillRect(x, y, size, size);
+        ctx.fillRect(rotatedX, rotatedY, size, size);
         ctx.fill();
     }
 
-    fillRect = (x1,y1,x2,y2,color = 'red') =>{
-        ctx.fillRect(x1, y1, x2 - x1, y2 - y1, color);
-    }
 
-    drawLine = (x1, y1, x2, y2, color = 'red') => {
+    drawLine = (x1, y1, x2, y2, color = 'red', angleGrad = 0) => {
         // рассчитываем разницу между координатами начальной и конечной точек по осям X и Y
         let dx = x2 - x1;
         let dy = y2 - y1;
@@ -30,7 +33,7 @@ class DrawService {
         if (Math.abs(dx) > Math.abs(dy)) {
             let e = (dy / dx) * 0.5;
             for (let i = 0; i < Math.abs(dx); i++) {
-                this.drawPoint(x, y, color);
+                this.drawPoint(x, y, {color, angleGrad});
                 x += sx;
                 e += Math.abs(dy) / Math.abs(dx);
                 if (e >= 0.5) {
@@ -41,7 +44,7 @@ class DrawService {
         } else {
             let e = (dx / dy) * 0.5;
             for (let i = 0; i < Math.abs(dy); i++) {
-                this.drawPoint(x, y, color);
+                this.drawPoint(x, y, {color, angleGrad});
                 y += sy;
                 e += Math.abs(dx) / Math.abs(dy);
                 if (e >= 0.5) {
@@ -52,7 +55,7 @@ class DrawService {
         }
     }
 
-    drawEllipse(rx, ry, xc, yc,color = 'red'){
+    drawEllipse(rx, ry, xc, yc, color = 'red', angleGrad) {
         let dx, dy, d1, d2, x, y;
         x = 0;
         y = ry;
@@ -64,26 +67,22 @@ class DrawService {
         dy = 2 * rx * rx * y;
 
         // For region 1
-        while (dx < dy)
-        {
+        while (dx < dy) {
 
             // Print points based on 4-way symmetry
-            this.drawPoint(x+xc,y+yc,color,2)
-            this.drawPoint(-x+xc,y+yc,color,2)
-            this.drawPoint(x+xc,-y+yc,color,2)
-            this.drawPoint(-x+xc,-y+yc,color,2)
+            this.drawPoint(x + xc, y + yc, {color, size: 2, angleGrad})
+            this.drawPoint(-x + xc, y + yc, {color, size: 2, angleGrad})
+            this.drawPoint(x + xc, -y + yc, {color, size: 2, angleGrad})
+            this.drawPoint(-x + xc, -y + yc, {color, size: 2, angleGrad})
 
 
             // Checking and updating value of
             // decision parameter based on algorithm
-            if (d1 < 0)
-            {
+            if (d1 < 0) {
                 x++;
                 dx = dx + (2 * ry * ry);
                 d1 = d1 + dx + (ry * ry);
-            }
-            else
-            {
+            } else {
                 x++;
                 y--;
                 dx = dx + (2 * ry * ry);
@@ -98,25 +97,21 @@ class DrawService {
             (rx * rx * ry * ry);
 
         // Plotting points of region 2
-        while (y >= 0)
-        {
+        while (y >= 0) {
 
 
-            this.drawPoint(x+xc,y+yc,color,2)
-            this.drawPoint(-x+xc,y+yc,color,2)
-            this.drawPoint(x+xc,-y+yc,color,2)
-            this.drawPoint(-x+xc,-y+yc,color,2)
+            this.drawPoint(x + xc, y + yc, {color, size: 2, angleGrad})
+            this.drawPoint(-x + xc, y + yc, {color, size: 2, angleGrad})
+            this.drawPoint(x + xc, -y + yc, {color, size: 2, angleGrad})
+            this.drawPoint(-x + xc, -y + yc, {color, size: 2, angleGrad})
 
             // Checking and updating parameter
             // value based on algorithm
-            if (d2 > 0)
-            {
+            if (d2 > 0) {
                 y--;
                 dy = dy - (2 * rx * rx);
                 d2 = d2 + (rx * rx) - dy;
-            }
-            else
-            {
+            } else {
                 y--;
                 x++;
                 dx = dx + (2 * ry * ry);
@@ -126,16 +121,16 @@ class DrawService {
         }
     }
 
-    drawCircle(X1, Y1, R, color = 'red') {
+    drawCircle(X1, Y1, R, color = 'red', angleGrad) {
         // R - радиус, X1, Y1 - координаты центра, C - цвет
         var x = 0, y = R;
         var delta = 1 - 2 * R;
         var error = 0;
         while (y >= 0) {
-            this.drawPoint(X1 + x, Y1 + y, color)
-            this.drawPoint(X1 + x, Y1 - y, color)
-            this.drawPoint(X1 - x, Y1 + y, color)
-            this.drawPoint(X1 - x, Y1 - y, color)
+            this.drawPoint(X1 + x, Y1 + y, {color, angleGrad})
+            this.drawPoint(X1 + x, Y1 - y, {color, angleGrad})
+            this.drawPoint(X1 - x, Y1 + y, {color, angleGrad})
+            this.drawPoint(X1 - x, Y1 - y, {color, angleGrad})
             error = 2 * (delta + y) - 1;
             if (delta < 0 && error <= 0) {
                 delta += 2 * ++x + 1;

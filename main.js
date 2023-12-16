@@ -1,10 +1,7 @@
-
 import {drawService} from "./services/drawService.js";
-import {CreateParallelepiped} from "./entities/fabrics.js";
+import {CreateParallelepiped, CreateRect} from "./entities/fabrics.js";
 import {Bird} from "./entities/bird/bird.js";
 import {Ellipse} from "./entities/Ellipse.js";
-
-
 
 
 const canvas = document.querySelector("#canvas");
@@ -27,8 +24,6 @@ canvas.width = 320;
 canvas.height = 480;
 
 
-
-
 const birdImg1 = new Image();
 birdImg1.src = "https://assets.codepen.io/1290466/flappy-bird-1.png?format=auto";
 const birdImg2 = new Image();
@@ -49,7 +44,7 @@ const hitSound = new Audio("https://assets.codepen.io/1290466/flappy-bird-hit.mp
 const pointSound = new Audio("https://assets.codepen.io/1290466/flappy-bird-point.mp3");
 const backgroundMusic = new Audio("https://assets.codepen.io/1290466/flappy-bird-background.mp3");
 
-const drawBackground = function() {
+const drawBackground = function () {
     ctx.fillStyle = "#71c4cc";
     ctx.fillRect(0, 0, canvas.width, canvas.height - groundHeight);
     ctx.drawImage(backgroundImg, 0, canvas.height - backgroundImg.height);
@@ -63,72 +58,9 @@ scoreElement.style.top = "35px";
 scoreElement.style.transform = "translate(-50%, -50%)";
 document.body.appendChild(scoreElement);
 
-const bird = new Bird()
 // Create the bird object
+const bird = new Bird()
 
-
-const birdQWE = {
-    x: 50,
-    y: canvas.height / 2,
-    width: 42,
-    height: 30,
-    speed: 0,
-    gravity: birdGravity,
-    jump: birdJump,
-    update: function() {
-        this.speed += this.gravity;
-        this.y += this.speed;
-    },
-    draw: function() {
-
-        // bird1.shift(this.x + this.width / 2,this.y + this.height / 2)
-        // bird1.shift(50,100)
-
-        // Rotate the bird up when it goes up
-        if (this.speed < 0) {
-            ctx.save();
-            ctx.translate(this.x + this.width / 2, this.y + this.height / 2);
-            ctx.rotate(-Math.PI / 16);
-
-            bird1.draw((this.x + this.width / 2) ,(this.y + this.height / 2) )
-
-            // bird flap animation
-            if (birdImageframe % 3 === 0) {
-                ctx.drawImage(birdImg1, -this.width / 2, -this.height / 2, this.width, this.height);
-            } else if (birdImageframe % 3 === 1) {
-                ctx.drawImage(birdImg2, -this.width / 2, -this.height / 2, this.width, this.height);
-            } else if (birdImageframe % 3 === 2) {
-                ctx.drawImage(birdImg3, -this.width / 2, -this.height / 2, this.width, this.height);
-            } else {
-                ctx.drawImage(birdImg4, -this.width / 2, -this.height / 2, this.width, this.height);
-            }
-
-            ctx.restore();
-        }
-        // Rotate the bird down when it goes down
-        else {
-            ctx.save();
-            ctx.translate(this.x + this.width / 2, this.y + this.height / 2);
-            ctx.rotate(Math.PI / 16);
-            // ctx.drawImage(birdImg1, -this.width / 2, -this.height / 2, this.width, this.height);
-
-            bird1.draw((this.x + this.width / 2) ,(this.y + this.height / 2) )
-
-            // bird flap animation
-            if (birdImageframe % 3 === 0) {
-                ctx.drawImage(birdImg1, -this.width / 2, -this.height / 2, this.width, this.height);
-            } else if (birdImageframe % 3 === 1) {
-                ctx.drawImage(birdImg2, -this.width / 2, -this.height / 2, this.width, this.height);
-            } else if (birdImageframe % 3 === 2) {
-                ctx.drawImage(birdImg3, -this.width / 2, -this.height / 2, this.width, this.height);
-            } else {
-                ctx.drawImage(birdImg4, -this.width / 2, -this.height / 2, this.width, this.height);
-            }
-
-            ctx.restore();
-        }
-    }
-};
 
 const ground = {
     x: 0,
@@ -136,17 +68,17 @@ const ground = {
     width: canvas.width,
     height: groundHeight,
     speed: 1,
-    update: function() {
+    update: function () {
         this.x -= this.speed;
         if (this.x <= -this.width) this.x = 0;
     },
-    draw: function() {
+    draw: function () {
         ctx.drawImage(groundImg, this.x, this.y, this.width, this.height);
         ctx.drawImage(groundImg, this.x + this.width, this.y, this.width, this.height);
     }
 };
 
-const addPipe = function() {
+const addPipe = function () {
     const height = Math.floor(Math.random() * canvas.height / 2) + 50;
     const y = height - pipeGap / 2;
     pipes.push({
@@ -157,19 +89,19 @@ const addPipe = function() {
     });
 };
 
-setInterval(function() {
+setInterval(function () {
     birdImageframe++;
 }, flapInterval);
 
 addPipe();
 
 // Listen for clicks to make the bird jump
-canvas.addEventListener("click", function() {
+canvas.addEventListener("click", function () {
     bird.speed = bird.jump;
 });
 
 // Listen for sparebar press to make the bird jump
-document.addEventListener("keydown", function(event) {
+document.addEventListener("keydown", function (event) {
     if (event.keyCode === 32) {
         bird.speed = bird.jump;
     }
@@ -181,7 +113,7 @@ playBtn.style.position = "absolute";
 playBtn.style.left = "50%";
 playBtn.style.top = "50%";
 playBtn.style.transform = "translate(-50%, -50%)";
-playBtn.addEventListener("click", function() {
+playBtn.addEventListener("click", function () {
     document.body.removeChild(playBtn);
     document.body.removeChild(helpText);
     running = true;
@@ -206,18 +138,17 @@ helpText.style.transform = "translate(-50%, -50%)";
 document.body.appendChild(helpText);
 
 // The game loop
-const gameLoop = function() {
+const gameLoop = function () {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ground.draw();
     drawBackground();
 
-    if (!running) return;
 
-    // bird.update();
-    // bird.draw();
-    bird.update()
+    if (bird.speed !== 0)
+        bird.update()
     bird.draw()
 
+    if (!running) return;
 
     // Draw and update pipes
     for (let i = 0; i < pipes.length; i++) {
@@ -247,9 +178,9 @@ const gameLoop = function() {
 
         // if game over / Check for collisions
         if (
-            bird.x < pipes[i].x + pipes[i].width &&
-            bird.x + bird.width > pipes[i].x &&
-            (bird.y < pipes[i].y || bird.y + bird.height > pipes[i].y + pipeGap)
+            bird.x - 31 < pipes[i].x + pipes[i].width &&
+            bird.x - 31 + bird.width > pipes[i].x &&
+            (bird.y - 27 < pipes[i].y || bird.y + 2 + bird.height > pipes[i].y + pipeGap)
         ) {
             running = false;
 
@@ -269,7 +200,7 @@ const gameLoop = function() {
             replayBtn.style.left = "50%";
             replayBtn.style.top = "50%";
             replayBtn.style.transform = "translate(-50%, -50%)";
-            replayBtn.addEventListener("click", function() {
+            replayBtn.addEventListener("click", function () {
                 document.body.removeChild(replayBtn);
                 running = true;
                 // Reset game variables to their initial values
@@ -309,15 +240,13 @@ const gameLoop = function() {
 
 
     // Keep the bird within the bounds of the canvas
-    if (bird.y + bird.height > canvas.height - groundHeight) {
-        bird.y = canvas.height - groundHeight - bird.height;
+    if (bird.y + bird.height / 2 > canvas.height - groundHeight) {
+        bird.y = canvas.height - groundHeight - bird.height / 2;
         bird.speed = 0;
     } else if (bird.y < 0) {
         bird.y = 0;
-        bird.speed = 0;
+        bird.speed = -0.1;
     }
-
-
 
 
     requestAnimationFrame(gameLoop);
@@ -327,17 +256,10 @@ const gameLoop = function() {
 gameLoop();
 
 
-
-
-
-
-
-
 // const parallelepiped = CreateParallelepiped(100,50,20, {bgColor:"yellow",borderColor:'black'})
 
 
-bird.draw(0,0)
-
+// bird.draw(0, 0)
 
 
 // parallelepiped.draw(100,50)
