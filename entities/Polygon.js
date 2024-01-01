@@ -8,17 +8,17 @@ export class Polygon {
     bgColor = 'red'
     borderColor = 'green'
 
-    constructor(points, {shiftX = 0, shiftY = 0, bgColor = 'red', borderColor = 'green'}) {
+    constructor(points, {bgColor = 'red', borderColor = 'green'}) {
         this.initialPoints = points.map((point) => {
             return {
-                x: point.x + shiftX,
-                y: point.y + shiftY
+                x: point.x,
+                y: point.y
             }
         })
         this.points = points.map((point) => {
             return {
-                x: point.x + shiftX,
-                y: point.y + shiftY
+                x: point.x,
+                y: point.y
             }
         })
 

@@ -20,14 +20,10 @@ export class Ellipse {
     // bgColor = 'red'
     borderColor = 'green'
 
-    constructor(radiusX, radiusY, {shiftX = 0, shiftY = 0, borderColor = 'green'}) {
+    constructor(radiusX, radiusY, {borderColor = 'green'}) {
         this.radiusX = radiusX
         this.radiusY = radiusY
 
-        this.initialCenter = {
-            x: shiftX,
-            y: shiftY,
-        }
 
         // this.bgColor = bgColor
         this.borderColor = borderColor

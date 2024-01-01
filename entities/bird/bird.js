@@ -4,8 +4,8 @@ import {Ellipse} from "../Ellipse.js";
 
 const canvas = document.querySelector("#canvas");
 const ctx = canvas.getContext('2d')
-const birdGravity = 0.20;
-const birdJump = -4.6;
+const birdGravity = 0.30;
+const birdJump = -5;
 
 
 export class Bird {

@@ -2,6 +2,8 @@ import {drawService} from "./services/drawService.js";
 import {CreateParallelepiped, CreateRect} from "./entities/fabrics.js";
 import {Bird} from "./entities/bird/bird.js";
 import {Ellipse} from "./entities/Ellipse.js";
+import {Ground} from "./entities/ground/ground.js";
+import {Pipe} from "./entities/pipe/pipe.js";
 
 
 const canvas = document.querySelector("#canvas");
@@ -43,6 +45,9 @@ pipesBackgroundImg.src = "https://assets.codepen.io/1290466/pipe-bg.jpg?format=a
 const hitSound = new Audio("https://assets.codepen.io/1290466/flappy-bird-hit.mp3");
 const pointSound = new Audio("https://assets.codepen.io/1290466/flappy-bird-point.mp3");
 const backgroundMusic = new Audio("https://assets.codepen.io/1290466/flappy-bird-background.mp3");
+// const hitSound = new Audio("https://assets.codepen.io/1290466/flappy-bird-hit");
+// const pointSound = new Audio("https://assets.codepen.io/1290466/flappy-bird-point");
+// const backgroundMusic = new Audio("https://assets.codepen.io/1290466/flappy-bird-background");
 
 const drawBackground = function () {
     ctx.fillStyle = "#71c4cc";
@@ -60,33 +65,25 @@ document.body.appendChild(scoreElement);
 
 // Create the bird object
 const bird = new Bird()
+const ground = new Ground()
 
-
-const ground = {
-    x: 0,
-    y: canvas.height - groundHeight,
-    width: canvas.width,
-    height: groundHeight,
-    speed: 1,
-    update: function () {
-        this.x -= this.speed;
-        if (this.x <= -this.width) this.x = 0;
-    },
-    draw: function () {
-        ctx.drawImage(groundImg, this.x, this.y, this.width, this.height);
-        ctx.drawImage(groundImg, this.x + this.width, this.y, this.width, this.height);
-    }
-};
+const pipe = new Pipe()
+pipe.draw()
 
 const addPipe = function () {
+
     const height = Math.floor(Math.random() * canvas.height / 2) + 50;
     const y = height - pipeGap / 2;
-    pipes.push({
-        x: canvas.width,
-        y: y,
-        width: pipeWidth,
-        height: height
-    });
+    // pipes.push({
+    //     x: canvas.width,
+    //     y: y,
+    //     width: pipeWidth,
+    //     height: height
+    // });
+
+    const pipe = new Pipe(canvas.width, y, height)
+
+    pipes.push(pipe)
 };
 
 setInterval(function () {
@@ -123,8 +120,9 @@ playBtn.addEventListener("click", function () {
     addPipe();
     gameLoop();
 
-    backgroundMusic.loop = true;
-    backgroundMusic.play();
+    //todo
+    // backgroundMusic.loop = true;
+    // backgroundMusic.play();
 });
 
 document.body.appendChild(playBtn);
@@ -140,9 +138,12 @@ document.body.appendChild(helpText);
 // The game loop
 const gameLoop = function () {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ground.draw();
+    // ground.draw();
     drawBackground();
 
+    ground.draw()
+    ground.update()
+    pipe.draw(100, 285)
 
     if (bird.speed !== 0)
         bird.update()
@@ -150,6 +151,12 @@ const gameLoop = function () {
 
     if (!running) return;
 
+
+    pipes.forEach((pipe) => {
+        pipe.draw()
+        pipe.x--
+    })
+    // debugger
     // Draw and update pipes
     for (let i = 0; i < pipes.length; i++) {
         // ctx.fillStyle = ctx.createPattern(pipesBackgroundImg, "repeat");
@@ -184,9 +191,10 @@ const gameLoop = function () {
         ) {
             running = false;
 
-            hitSound.play();
+            //todo
+            // hitSound.play();
 
-            ground.draw();
+            // ground.draw();
 
             backgroundMusic.pause();
             backgroundMusic.currentTime = 0;
@@ -209,8 +217,8 @@ const gameLoop = function () {
                 addPipe();
                 gameLoop();
 
-                backgroundMusic.loop = true;
-                backgroundMusic.play();
+                // backgroundMusic.loop = true;
+                // backgroundMusic.play();
             });
 
             document.body.appendChild(replayBtn);
@@ -233,8 +241,9 @@ const gameLoop = function () {
         }
     }
 
+
     ground.update();
-    ground.draw();
+    // ground.draw();
 
     scoreElement.textContent = score;
 
@@ -256,17 +265,10 @@ const gameLoop = function () {
 gameLoop();
 
 
-// const parallelepiped = CreateParallelepiped(100,50,20, {bgColor:"yellow",borderColor:'black'})
-
-
-// bird.draw(0, 0)
-
-
-// parallelepiped.draw(100,50)
-
 // ctx.beginPath();
-// ctx.ellipse(100, 100, 25, 75, Math.PI * 0.5 , 0, 2 * Math.PI);
+// ctx.ellipse(100, 100, 25, 75, Math.PI * 0.5, 0, 2 * Math.PI);
 // ctx.stroke();
+
 
 // drawService.drawCircle(50,50,50,'red')
 
