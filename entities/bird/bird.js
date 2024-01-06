@@ -16,7 +16,7 @@ export class Bird {
     x = 50
     y = canvas.height / 2 - 50
     width = 62
-    height = 23
+    height = 45
     speed = 0.1
     gravity = birdGravity
     jump = birdJump
@@ -29,8 +29,8 @@ export class Bird {
 
     constructor() {
 
-        const mainShiftX = -31
-        const mainShiftY = -23
+        const mainShiftX = -25
+        const mainShiftY = -20
 
         const body = CreateParallelepiped(40, 30, 15, {bgColor: "yellow"})
         body.shift(mainShiftX, mainShiftY)
@@ -53,8 +53,9 @@ export class Bird {
     }
 
     #drawPolyhedrons(x = 0, y = 0, angleGrad) {
-        this.polyhedrons.forEach((polyhedron) => {
-            polyhedron.draw(x, y, angleGrad)
+        const bgColor = "green"
+        this.polyhedrons.forEach((polyhedron, index) => {
+            polyhedron.draw(x, y, angleGrad, bgColor)
         })
 
     }
@@ -66,7 +67,7 @@ export class Bird {
     }
 
 
-    draw(x = 0, y = 0) {
+    draw() {
 
 
         // Rotate the bird up when it goes up

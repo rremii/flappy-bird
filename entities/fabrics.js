@@ -36,5 +36,5 @@ export const CreateParallelepiped = (width, height, depth, {bgColor = "white", b
     ], {bgColor, borderColor})
 
 
-    return new Polyhedron([rect1, rect2, rect3, rect4])
+    return new Polyhedron([rect2, rect3, rect4])
 }

@@ -1,12 +1,17 @@
 import {Ellipse} from "../Ellipse.js";
 import {Polyhedron} from "../Polyhedron.js";
 import {CreateParallelepiped} from "../fabrics.js";
+import groundBottomImg from "./../../public/groundBottom.png"
+import groundTopImg from "./../../public/groundTop.png"
 
 const canvas = document.querySelector('#canvas')
 const ctx = canvas.getContext('2d')
 
-const groundImg = new Image();
-groundImg.src = "https://assets.codepen.io/1290466/ground2.jpg?format=auto";
+const groundBottom = new Image();
+groundBottom.src = groundBottomImg
+const groundTop = new Image();
+groundTop.src = groundTopImg
+
 
 export class Ground {
 
@@ -15,7 +20,7 @@ export class Ground {
     y = canvas.height - 50
     width = canvas.width
     height = 50
-    speed = 0.5
+    speed = 1
 
     constructor() {
     }
@@ -27,11 +32,16 @@ export class Ground {
 
     draw() {
 
-        const polihedron = CreateParallelepiped(this.width + 100, 50, 30, {})
+        const polihedron = CreateParallelepiped(this.width + 100, 50, 35, {})
         polihedron.draw(-30, 440)
 
-        // ctx.drawImage(groundImg, this.x, this.y + 10, this.width, this.height);
-        // ctx.drawImage(groundImg, this.x + this.width, this.y + 10, this.width, this.height);
+
+        ctx.drawImage(groundTop, this.x, this.y + 10, this.width, 35);
+        ctx.drawImage(groundTop, this.x + this.width, this.y + 10, this.width, 35);
+
+        ctx.drawImage(groundBottom, this.x, this.y + 25, this.width, 30);
+        ctx.drawImage(groundBottom, this.x + this.width, this.y + 25, this.width, 30);
+
     }
 }
 

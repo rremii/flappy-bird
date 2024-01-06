@@ -13,7 +13,7 @@ let birdImageframe = 0;
 const flapInterval = 50;
 const birdGravity = 0.20;
 const birdJump = -4.6;
-const pipes = [];
+const pipeGates = [];
 const pipeWidth = 52;
 const minGap = 110;
 const maxGap = 190;
@@ -34,8 +34,9 @@ const birdImg3 = new Image();
 birdImg3.src = "https://assets.codepen.io/1290466/flappy-bird-3.png?format=auto";
 const birdImg4 = new Image();
 birdImg4.src = "https://assets.codepen.io/1290466/flappy-bird-2.png?format=auto";
-const backgroundImg = new Image();
-backgroundImg.src = "https://assets.codepen.io/1290466/flappy-bird-bg-bottom.jpg?format=auto";
+// const backgroundImg = new Image();
+// backgroundImg.crossOrigin = "Anonymous"
+// backgroundImg.src = "https://assets.codepen.io/1290466/flappy-bird-bg-bottom.jpg?format=auto";
 const groundImg = new Image();
 groundImg.src = "https://assets.codepen.io/1290466/ground2.jpg?format=auto";
 const pipesBackgroundImg = new Image();
@@ -52,7 +53,7 @@ const backgroundMusic = new Audio("https://assets.codepen.io/1290466/flappy-bird
 const drawBackground = function () {
     ctx.fillStyle = "#71c4cc";
     ctx.fillRect(0, 0, canvas.width, canvas.height - groundHeight);
-    ctx.drawImage(backgroundImg, 0, canvas.height - backgroundImg.height);
+    // ctx.drawImage(backgroundImg, 0, canvas.height - backgroundImg.height);
 };
 
 const scoreElement = document.createElement("span")
@@ -65,32 +66,36 @@ document.body.appendChild(scoreElement);
 
 // Create the bird object
 const bird = new Bird()
+const collision = CreateRect(62, 45, {})
+collision.shiftInitial(-25, -20)
+// const collision = {
+//     x: bird.x
+// }
+
 const ground = new Ground()
 
-const pipe = new Pipe()
-pipe.draw()
+// const pipe = new Pipe()
+// pipe.draw()
 
-const addPipe = function () {
+const addPipeGate = function () {
 
     const height = Math.floor(Math.random() * canvas.height / 2) + 50;
     const y = height - pipeGap / 2;
-    // pipes.push({
-    //     x: canvas.width,
-    //     y: y,
-    //     width: pipeWidth,
-    //     height: height
-    // });
 
-    const pipe = new Pipe(canvas.width, y, height)
 
-    pipes.push(pipe)
+    pipeGates.push({
+        x: canvas.width,
+        y: y,
+        width: 70,
+        height: height
+    })
 };
 
 setInterval(function () {
     birdImageframe++;
 }, flapInterval);
 
-addPipe();
+addPipeGate();
 
 // Listen for clicks to make the bird jump
 canvas.addEventListener("click", function () {
@@ -116,8 +121,8 @@ playBtn.addEventListener("click", function () {
     running = true;
     // Set game variables
     score = 0;
-    pipes.length = 0;
-    addPipe();
+    pipeGates.length = 0;
+    addPipeGate();
     gameLoop();
 
     //todo
@@ -141,60 +146,38 @@ const gameLoop = function () {
     // ground.draw();
     drawBackground();
 
+    if (!running) return;
     ground.draw()
     ground.update()
-    pipe.draw(100, 285)
+    // pipe.draw(100, 285)
 
     if (bird.speed !== 0)
         bird.update()
-    bird.draw()
-
-    if (!running) return;
 
 
-    pipes.forEach((pipe) => {
-        pipe.draw()
-        pipe.x--
-    })
-    // debugger
-    // Draw and update pipes
-    for (let i = 0; i < pipes.length; i++) {
-        // ctx.fillStyle = ctx.createPattern(pipesBackgroundImg, "repeat");
-        ctx.fillRect(pipes[i].x, 0, pipes[i].width, pipes[i].y);
-        ctx.fillRect(pipes[i].x, pipes[i].y + pipeGap, pipes[i].width, canvas.height - pipes[i].y - pipeGap);
+    collision.shift(bird.x, bird.y)
+    collision.draw()
+    pipeGates.forEach((gate) => {
+        const {x, y, height, width} = gate
 
-        // Top pipe
-        ctx.beginPath();
-        ctx.strokeStyle = "#618842";
-        ctx.lineWidth = 4;
-        ctx.moveTo(pipes[i].x, pipes[i].y);
-        ctx.lineTo(pipes[i].x + pipes[i].width, pipes[i].y);
-        ctx.stroke();
-        ctx.drawImage(pipesBackgroundImg, pipes[i].x, 0, pipes[i].width, pipes[i].y);
 
-        // Bottom pipe
-        ctx.beginPath();
-        ctx.strokeStyle = "#618842";
-        ctx.lineWidth = 4;
-        ctx.moveTo(pipes[i].x, pipes[i].y + pipeGap);
-        ctx.lineTo(pipes[i].x + pipes[i].width, pipes[i].y + pipeGap);
-        ctx.stroke();
-        ctx.drawImage(pipesBackgroundImg, pipes[i].x, pipes[i].y + pipeGap, pipes[i].width, canvas.height - pipes[i].y - pipeGap - groundHeight);
+        const topPipe = new Pipe(x, -30, y)
+        topPipe.draw()
 
-        pipes[i].x -= 1;
+        bird.draw()
 
-        // if game over / Check for collisions
-        if (
-            bird.x - 31 < pipes[i].x + pipes[i].width &&
-            bird.x - 31 + bird.width > pipes[i].x &&
-            (bird.y - 27 < pipes[i].y || bird.y + 2 + bird.height > pipes[i].y + pipeGap)
-        ) {
+        const bottomPipe = new Pipe(x, -30 + y + height - 10, canvas.height - y - height)
+        bottomPipe.draw()
+
+        gate.x--
+
+        const isBirdOver = bird.x - 25 + bird.width > x && bird.x - 25 < x + width
+        const isBirdBetween = (bird.y - 20) > y && (bird.y - 20 + bird.height) < y + height - 20
+        if (isBirdOver && !isBirdBetween) {
             running = false;
 
-            //todo
             // hitSound.play();
 
-            // ground.draw();
 
             backgroundMusic.pause();
             backgroundMusic.currentTime = 0;
@@ -213,8 +196,8 @@ const gameLoop = function () {
                 running = true;
                 // Reset game variables to their initial values
                 score = 0;
-                pipes.length = 0;
-                addPipe();
+                pipeGates.length = 0;
+                addPipeGate();
                 gameLoop();
 
                 // backgroundMusic.loop = true;
@@ -223,34 +206,31 @@ const gameLoop = function () {
 
             document.body.appendChild(replayBtn);
 
-            return;
+            return
         }
 
         // Check if bird has passed the pipe and add point to score
-        if (bird.x > pipes[i].x + pipes[i].width && !pipes[i].passed) {
-            pipes[i].passed = true;
+        if (bird.x - 25 > gate.x + gate.width && !gate.passed) {
+            gate.passed = true;
             pointSound.play();
             score++;
         }
 
         // Add a new pipe when the current pipe has moved off the screen
-        if (pipes[i].x + pipes[i].width < 0) {
-            pipes.splice(i, 1);
-            i--;
-            addPipe();
+        if (gate.x + gate.width < 0) {
+            pipeGates.splice(0);
+            addPipeGate();
         }
-    }
 
+    })
 
-    ground.update();
-    // ground.draw();
 
     scoreElement.textContent = score;
 
 
     // Keep the bird within the bounds of the canvas
-    if (bird.y + bird.height / 2 > canvas.height - groundHeight) {
-        bird.y = canvas.height - groundHeight - bird.height / 2;
+    if (bird.y + bird.height / 2 - 10 > canvas.height - groundHeight) {
+        bird.y = canvas.height - groundHeight - bird.height / 2 + 10;
         bird.speed = 0;
     } else if (bird.y < 0) {
         bird.y = 0;
@@ -266,10 +246,19 @@ gameLoop();
 
 
 // ctx.beginPath();
-// ctx.ellipse(100, 100, 25, 75, Math.PI * 0.5, 0, 2 * Math.PI);
+// ctx.moveTo(20, 20);
+// ctx.lineTo(250, 70);
+// ctx.lineTo(270, 120);
+// ctx.lineTo(170, 140);
+// ctx.lineTo(190, 80);
+// ctx.lineTo(100, 60);
+// ctx.lineTo(50, 130);
+// ctx.lineTo(20, 20);
 // ctx.stroke();
 
+// const rect = CreateRect(500, 500, {})
+// rect.draw(0, 0,)
+// const cube = CreateParallelepiped(50, 50, 25, {})
+// cube.draw(0, 0, 0, "green")
 
-// drawService.drawCircle(50,50,50,'red')
-
-
+bird.draw()

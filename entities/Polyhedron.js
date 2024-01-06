@@ -6,10 +6,10 @@ export class Polyhedron {
         this.polygons = polygons
     }
 
-    draw(x = 0, y = 0, angleGrad) {
+    draw(x = 0, y = 0, angleGrad, bgColor) {
         this.polygons.forEach((polygon) => {
             polygon.shift(x, y, angleGrad)
-            polygon.fill(x, y)
+            polygon.draw(x, y, bgColor)
         })
     }
 
