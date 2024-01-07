@@ -1,42 +1,52 @@
 import {drawService} from "../services/drawService.js";
 
-const ctx = document.querySelector('#canvas')?.getContext('2d')
+const ctx = document.querySelector('#canvas')?.getContext('2d', {willReadFrequently: true})
 
+const ColorsEquals = (color1, color2) => {
+    return color1[0] === color2[0] && color1[1] === color2[1] && color1[2] === color2[2] && color1[3] === color2[3]
+}
 
 // Задаем цвет заливки
-// var fillColor = 'green';
+const fillColor = [0, 255, 0, 255]; //lime
+const borderColor = [255, 0, 0, 255] //red
 
 // Функция заливки
-function floodFill(startX, startY, color) {
-    // Создаем массив для хранения координат пикселей, требующих заливку
-    var pixelsToCheck = [[startX, startY]];
+function floodFill(startX, startY,) {
 
-    console.log("qwe")
+    // Создаем массив для хранения координат пикселей, требующих заливку
+    const pixelsToCheck = [[startX, startY]];
+
     // Получаем цвет пикселя, с которого начинаем заливку
-    var startColor = ctx.getImageData(startX, startY, 1, 1).data;
+    const startColor = ctx.getImageData(startX, startY, 1, 1).data;
     // debugger
     // Пока есть пиксели для проверки
     while (pixelsToCheck.length > 0) {
+        console.log("qwe")
+        // console.log(pixelsToCheck.length)
         // Получаем координаты текущего пикселя
-        var currentPosition = pixelsToCheck.pop();
-        var x = currentPosition[0];
-        var y = currentPosition[1];
+        const currentPosition = pixelsToCheck.pop();
+        const x = currentPosition[0];
+        const y = currentPosition[1];
+
 
         // Получаем цвет текущего пикселя
-        var currentColor = ctx.getImageData(x, y, 1, 1).data;
-
+        const currentColor = ctx.getImageData(x, y, 1, 1, {willReadFrequently: true}).data;
         // Если текущий пиксель имеет стартовый цвет
-        if (currentColor[0] === startColor[0] && currentColor[1] === startColor[1] && currentColor[2] === startColor[2] && currentColor[3] === startColor[3]) {
-            // Закрашиваем текущий пиксель
-            ctx.fillStyle = color;
-            ctx.fillRect(x, y, 1, 1);
+        ctx.fillStyle = "Lime";
+        ctx.fillRect(x, y, 1, 1);
 
-            // Добавляем соседние пиксели для проверки
+        const rightColor = ctx.getImageData(x + 1, y, 1, 1, {willReadFrequently: true}).data;
+        const leftColor = ctx.getImageData(x - 1, y, 1, 1, {willReadFrequently: true}).data;
+        const topColor = ctx.getImageData(x, y + 1, 1, 1, {willReadFrequently: true}).data;
+        const bottomColor = ctx.getImageData(x, y - 1, 1, 1, {willReadFrequently: true}).data;
+        if (!ColorsEquals(rightColor, fillColor) && !ColorsEquals(rightColor, borderColor))
             pixelsToCheck.push([x + 1, y]);
+        if (!ColorsEquals(leftColor, fillColor) && !ColorsEquals(leftColor, borderColor))
             pixelsToCheck.push([x - 1, y]);
+        if (!ColorsEquals(topColor, fillColor) && !ColorsEquals(topColor, borderColor))
             pixelsToCheck.push([x, y + 1]);
+        if (!ColorsEquals(bottomColor, fillColor) && !ColorsEquals(bottomColor, borderColor))
             pixelsToCheck.push([x, y - 1]);
-        }
     }
 }
 
@@ -92,7 +102,7 @@ export class Polygon {
         })
     }
 
-    #fill(color) {
+    #myFill(color) {
         const startPoint = this.points[0]
         const middlePoint = this.points[1]
         const endPoint = this.points[2]
@@ -102,11 +112,29 @@ export class Polygon {
         const x = Math.round((startPoint.x + middlePoint.x) / 2)
         const y = Math.round(middlePoint.y + deltaY)
 
-
         floodFill(x, y, color)
     }
 
-    draw(x = 0, y = 0, bgColor) {
+    #fill(color) {
+        ctx.beginPath()
+
+        ctx.moveTo(this.points[0].x, this.points[0].y)
+        this.points.forEach((point, index) => {
+            if (this.points.length < 3) return
+            if (index === 0) {
+            } else {
+                const x2 = point.x
+                const y2 = point.y
+                ctx.lineTo(x2, y2)
+            }
+        })
+        ctx.closePath()
+        ctx.fillStyle = color
+        ctx.fill()
+    }
+
+    draw(x = 0, y = 0, bgColor, borderColor) {
+        if (bgColor) this.#fill(bgColor)
 
         const length = this.points.length
         this.points.forEach((point, index) => {
@@ -115,14 +143,14 @@ export class Polygon {
                 const x1 = point.x
                 const y1 = point.y
                 const x2 = this.points.at(-1).x
-                const y2 = this.points.at(-1).y + 1 //todo
-                drawService.drawLine(x1, y1, x2, y2, "red")
+                const y2 = this.points.at(-1).y  //todo remove when yours fill
+                drawService.drawLine(x1, y1, x2, y2, borderColor)
             } else {
                 const x1 = this.points[index - 1].x
                 const y1 = this.points[index - 1].y
                 const x2 = point.x
                 const y2 = point.y
-                drawService.drawLine(x1, y1, x2, y2, "red")
+                drawService.drawLine(x1, y1, x2, y2, borderColor)
             }
         })
 
@@ -130,9 +158,7 @@ export class Polygon {
             x: point.x + x,
             y: point.y + y,
         }))
-
-        // debugger
-        // if (bgColor) this.#fill(bgColor)
+        // if (bgColor) this.#myFill(bgColor)
 
     }
 }

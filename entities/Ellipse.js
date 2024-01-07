@@ -17,28 +17,13 @@ export class Ellipse {
     radiusY = 0
 
 
-    // bgColor = 'red'
-    borderColor = 'green'
-
-    constructor(radiusX, radiusY, {borderColor = 'green'}) {
+    constructor(radiusX, radiusY) {
         this.radiusX = radiusX
         this.radiusY = radiusY
 
 
-        // this.bgColor = bgColor
-        this.borderColor = borderColor
     }
 
-    // shiftInitial(x = 0,y = 0){
-    //     this.points = this.initialPoints.map((point)=>({
-    //         x: point.x + x,
-    //         y: point.y + y,
-    //     }))
-    //     this.initialPoints = this.initialPoints.map((point)=>({
-    //         x: point.x + x,
-    //         y: point.y + y,
-    //     }))
-    // }
 
     shift(x = 0, y = 0, angleGrad = 0) {
 
@@ -54,30 +39,14 @@ export class Ellipse {
         }
     }
 
-    // fill(){
-    //     ctx.beginPath()
-    //
-    //     ctx.moveTo(this.points[0].x,this.points[0].y)
-    //     this.points.forEach((point,index)=>{
-    //         if (this.points.length < 3) return
-    //         if (index === 0){
-    //         }else {
-    //             const x2 = point.x
-    //             const y2 = point.y
-    //             ctx.lineTo(x2,y2)
-    //         }
-    //     })
-    //     ctx.lineWidth = 1
-    //     ctx.strokeStyle = this.borderColor;
-    //     ctx.closePath()
-    //     ctx.fillStyle = this.bgColor
-    //     ctx.fill()
-    //     ctx.stroke()
-    // }
-    draw(x = 0, y = 0) {
+    draw(x = 0, y = 0, bgColor, borderColor, isHalf) {
         const {x: cx, y: cy} = this.center
 
-        drawService.drawEllipse(this.radiusX, this.radiusY, x + cx, y + cy, this.borderColor)
+        ctx.beginPath()
+        ctx.ellipse(x + cx, y + cy, this.radiusX, this.radiusY, 0, 0, Math.PI * 2)
+        ctx.fillStyle = bgColor
+        ctx.fill()
+        drawService.drawEllipse(this.radiusX, this.radiusY, x + cx, y + cy, borderColor, 0, isHalf)
 
     }
 }

@@ -7,7 +7,7 @@ import {Pipe} from "./entities/pipe/pipe.js";
 
 
 const canvas = document.querySelector("#canvas");
-const ctx = canvas?.getContext("2d");
+const ctx = canvas?.getContext("2d", {willReadFrequently: true});
 const groundHeight = 30;
 let birdImageframe = 0;
 const flapInterval = 50;
@@ -15,15 +15,10 @@ const birdGravity = 0.20;
 const birdJump = -4.6;
 const pipeGates = [];
 const pipeWidth = 52;
-const minGap = 110;
-const maxGap = 190;
-const pipeGap = Math.floor(Math.random() * (maxGap - minGap + 1) + minGap);
+const minGap = 130;
+const maxGap = 210;
 let score = 0;
 let running = false;
-
-// Set canvas size
-canvas.width = 320;
-canvas.height = 480;
 
 
 const birdImg1 = new Image();
@@ -34,9 +29,9 @@ const birdImg3 = new Image();
 birdImg3.src = "https://assets.codepen.io/1290466/flappy-bird-3.png?format=auto";
 const birdImg4 = new Image();
 birdImg4.src = "https://assets.codepen.io/1290466/flappy-bird-2.png?format=auto";
-// const backgroundImg = new Image();
-// backgroundImg.crossOrigin = "Anonymous"
-// backgroundImg.src = "https://assets.codepen.io/1290466/flappy-bird-bg-bottom.jpg?format=auto";
+const backgroundImg = new Image();
+backgroundImg.crossOrigin = "Anonymous"
+backgroundImg.src = "https://assets.codepen.io/1290466/flappy-bird-bg-bottom.jpg?format=auto";
 const groundImg = new Image();
 groundImg.src = "https://assets.codepen.io/1290466/ground2.jpg?format=auto";
 const pipesBackgroundImg = new Image();
@@ -53,7 +48,7 @@ const backgroundMusic = new Audio("https://assets.codepen.io/1290466/flappy-bird
 const drawBackground = function () {
     ctx.fillStyle = "#71c4cc";
     ctx.fillRect(0, 0, canvas.width, canvas.height - groundHeight);
-    // ctx.drawImage(backgroundImg, 0, canvas.height - backgroundImg.height);
+    ctx.drawImage(backgroundImg, 0, canvas.height - backgroundImg.height);
 };
 
 const scoreElement = document.createElement("span")
@@ -68,26 +63,21 @@ document.body.appendChild(scoreElement);
 const bird = new Bird()
 const collision = CreateRect(62, 45, {})
 collision.shiftInitial(-25, -20)
-// const collision = {
-//     x: bird.x
-// }
 
 const ground = new Ground()
 
-// const pipe = new Pipe()
-// pipe.draw()
 
 const addPipeGate = function () {
+    const pipeGap = Math.floor(Math.random() * (maxGap - minGap + 1) + minGap);
 
-    const height = Math.floor(Math.random() * canvas.height / 2) + 50;
-    const y = height - pipeGap / 2;
+    const height = Math.floor(Math.random() * canvas.height / 2);
 
 
     pipeGates.push({
         x: canvas.width,
-        y: y,
+        y: height,
         width: 70,
-        height: height
+        height: pipeGap
     })
 };
 
@@ -143,13 +133,11 @@ document.body.appendChild(helpText);
 // The game loop
 const gameLoop = function () {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    // ground.draw();
     drawBackground();
 
     if (!running) return;
     ground.draw()
     ground.update()
-    // pipe.draw(100, 285)
 
     if (bird.speed !== 0)
         bird.update()
@@ -161,13 +149,13 @@ const gameLoop = function () {
         const {x, y, height, width} = gate
 
 
-        const topPipe = new Pipe(x, -30, y)
-        topPipe.draw()
+        const bottomPipe = new Pipe(x, -30 + y + height - 10, canvas.height - y - height)
+        bottomPipe.draw()
 
         bird.draw()
 
-        const bottomPipe = new Pipe(x, -30 + y + height - 10, canvas.height - y - height)
-        bottomPipe.draw()
+        const topPipe = new Pipe(x, -30, y)
+        topPipe.draw()
 
         gate.x--
 
@@ -244,21 +232,13 @@ const gameLoop = function () {
 
 gameLoop();
 
-
-// ctx.beginPath();
-// ctx.moveTo(20, 20);
-// ctx.lineTo(250, 70);
-// ctx.lineTo(270, 120);
-// ctx.lineTo(170, 140);
-// ctx.lineTo(190, 80);
-// ctx.lineTo(100, 60);
-// ctx.lineTo(50, 130);
-// ctx.lineTo(20, 20);
-// ctx.stroke();
-
-// const rect = CreateRect(500, 500, {})
-// rect.draw(0, 0,)
-// const cube = CreateParallelepiped(50, 50, 25, {})
-// cube.draw(0, 0, 0, "green")
-
 bird.draw()
+
+// const cube = CreateParallelepiped(50, 50, 25, {})
+//
+// cube.draw(10, 300, 0, "lime")
+
+
+// const ellipse = new Ellipse(50, 25, {})
+//
+// ellipse.draw(50, 50, "green", "black")

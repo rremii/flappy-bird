@@ -35,34 +35,39 @@ export class Bird {
         const body = CreateParallelepiped(40, 30, 15, {bgColor: "yellow"})
         body.shift(mainShiftX, mainShiftY)
 
-        const wing = CreateParallelepiped(20, 7, 10, {bgColor: "yellow"})
-        wing.shift(3 + mainShiftX, 25 + mainShiftY)
+        const wing1 = CreateParallelepiped(20, 7, 10, {bgColor: "yellow"})
+        wing1.shift(3 + mainShiftX, 25 + mainShiftY)
+
+        const wing2 = CreateParallelepiped(20, 7, 10, {bgColor: "yellow"})
+        wing2.shift(3 + mainShiftX, 25 + mainShiftY)
+        
+        const wing3 = CreateParallelepiped(20, 7, 10, {bgColor: "yellow"})
+        wing3.shift(3 + mainShiftX, 25 + mainShiftY)
 
         const head = CreateParallelepiped(10, 10, 7, {bgColor: "red"})
         head.shift(45 + mainShiftX, 17 + mainShiftY)
 
 
-        const eye1 = new Ellipse(1.5, 3, {borderColor: "black"})
+        const eye1 = new Ellipse(1.5, 3)
         eye1.shift(50, 10 + mainShiftY)
 
-        const eye2 = new Ellipse(1.5, 3, {borderColor: "black"})
+        const eye2 = new Ellipse(1.5, 3)
         eye2.shift(45, 15 + mainShiftY)
 
-        this.polyhedrons = [body, wing, head]
+        this.polyhedrons = [body, wing2, head]
         this.ellipses = [eye1, eye2]
     }
 
     #drawPolyhedrons(x = 0, y = 0, angleGrad) {
-        const bgColor = "green"
         this.polyhedrons.forEach((polyhedron, index) => {
-            polyhedron.draw(x, y, angleGrad, bgColor)
+            polyhedron.draw(x, y, angleGrad, index === 2 ? "red" : "yellow", "black")
         })
 
     }
 
     #drawEllipses(x = 0, y = 0, angleGrad) {
         this.ellipses.forEach((ellipse => {
-            ellipse.draw(x, y, angleGrad)
+            ellipse.draw(x, y, 'black', 'black')
         }))
     }
 
@@ -75,8 +80,8 @@ export class Bird {
 
             const eye1 = this.ellipses[0]
             const eye2 = this.ellipses[1]
-            eye1.shift(46 - 39, -7 - 5)
-            eye2.shift(48 - 39, -15 - 5)
+            eye1.shift(46 - 33, -7 - 9)
+            eye2.shift(48 - 33, -15 - 9)
 
             this.#drawPolyhedrons(this.x, this.y, -40)
             this.#drawEllipses(this.x, this.y, -40)
@@ -86,32 +91,32 @@ export class Bird {
 
             const eye1 = this.ellipses[0]
             const eye2 = this.ellipses[1]
-            eye1.shift(31 - 17, 39 - 35)
-            eye2.shift(37 - 17, 39 - 35)
+            eye1.shift(31 - 13, 39 - 29)
+            eye2.shift(37 - 13, 39 - 29)
 
             this.#drawPolyhedrons(this.x, this.y, 40)
             this.#drawEllipses(this.x, this.y, 40)
 
 
             // bird flap animation
-            //     // if (birdImageframe % 3 === 0) {
-            //     //     ctx.drawImage(birdImg1, -this.width / 2, -this.height / 2, this.width, this.height);
-            //     // } else if (birdImageframe % 3 === 1) {
-            //     //     ctx.drawImage(birdImg2, -this.width / 2, -this.height / 2, this.width, this.height);
-            //     // } else if (birdImageframe % 3 === 2) {
-            //     //     ctx.drawImage(birdImg3, -this.width / 2, -this.height / 2, this.width, this.height);
-            //     // } else {
-            //     //     ctx.drawImage(birdImg4, -this.width / 2, -this.height / 2, this.width, this.height);
-            //     // }
-            //
+            // if (birdImageframe % 3 === 0) {
+            //     ctx.drawImage(birdImg1, -this.width / 2, -this.height / 2, this.width, this.height);
+            // } else if (birdImageframe % 3 === 1) {
+            //     ctx.drawImage(birdImg2, -this.width / 2, -this.height / 2, this.width, this.height);
+            // } else if (birdImageframe % 3 === 2) {
+            //     ctx.drawImage(birdImg3, -this.width / 2, -this.height / 2, this.width, this.height);
+            // } else {
+            //     ctx.drawImage(birdImg4, -this.width / 2, -this.height / 2, this.width, this.height);
+            // }
+
         }
         if (this.speed === 0) {
 
             console.log(this.speed)
             const eye1 = this.ellipses[0]
             const eye2 = this.ellipses[1]
-            eye1.shift(13, -5)
-            eye2.shift(19, -11)
+            eye1.shift(13 + 6, -5 + 3)
+            eye2.shift(19 + 6, -11 + 3)
 
             this.#drawPolyhedrons(this.x, this.y, 0)
             this.#drawEllipses(this.x, this.y, 0)

@@ -55,7 +55,7 @@ class DrawService {
         }
     }
 
-    drawEllipse(rx, ry, xc, yc, color = 'red', angleGrad) {
+    drawEllipse(rx, ry, xc, yc, color = 'red', angleGrad, isHalf = false) {
         let dx, dy, d1, d2, x, y;
         x = 0;
         y = ry;
@@ -70,10 +70,12 @@ class DrawService {
         while (dx < dy) {
 
             // Print points based on 4-way symmetry
-            this.drawPoint(x + xc, y + yc, {color, size: 2, angleGrad})
-            this.drawPoint(-x + xc, y + yc, {color, size: 2, angleGrad})
-            this.drawPoint(x + xc, -y + yc, {color, size: 2, angleGrad})
-            this.drawPoint(-x + xc, -y + yc, {color, size: 2, angleGrad})
+            this.drawPoint(x + xc, y + yc, {color, size: 1.5, angleGrad})
+            this.drawPoint(-x + xc, y + yc, {color, size: 1.5, angleGrad})
+            if (!isHalf) {
+                this.drawPoint(x + xc, -y + yc, {color, size: 1.5, angleGrad})
+                this.drawPoint(-x + xc, -y + yc, {color, size: 1.5, angleGrad})
+            }
 
 
             // Checking and updating value of
@@ -102,9 +104,10 @@ class DrawService {
 
             this.drawPoint(x + xc, y + yc, {color, size: 2, angleGrad})
             this.drawPoint(-x + xc, y + yc, {color, size: 2, angleGrad})
-            this.drawPoint(x + xc, -y + yc, {color, size: 2, angleGrad})
-            this.drawPoint(-x + xc, -y + yc, {color, size: 2, angleGrad})
-
+            if (!isHalf) {
+                this.drawPoint(x + xc, -y + yc, {color, size: 2, angleGrad})
+                this.drawPoint(-x + xc, -y + yc, {color, size: 2, angleGrad})
+            }
             // Checking and updating parameter
             // value based on algorithm
             if (d2 > 0) {
