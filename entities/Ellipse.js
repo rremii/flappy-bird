@@ -20,8 +20,6 @@ export class Ellipse {
     constructor(radiusX, radiusY) {
         this.radiusX = radiusX
         this.radiusY = radiusY
-
-
     }
 
 
@@ -39,11 +37,11 @@ export class Ellipse {
         }
     }
 
-    draw(x = 0, y = 0, bgColor, borderColor, isHalf) {
+    draw(x = 0, y = 0, bgColor, borderColor, isHalf = false) {
         const {x: cx, y: cy} = this.center
 
         ctx.beginPath()
-        ctx.ellipse(x + cx, y + cy, this.radiusX, this.radiusY, 0, 0, Math.PI * 2)
+        ctx.ellipse(x + cx + 1, y + cy + 1, this.radiusX, this.radiusY, 0, 0, Math.PI * 2)
         ctx.fillStyle = bgColor
         ctx.fill()
         drawService.drawEllipse(this.radiusX, this.radiusY, x + cx, y + cy, borderColor, 0, isHalf)

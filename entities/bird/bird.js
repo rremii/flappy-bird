@@ -3,15 +3,25 @@ import {drawService} from "../../services/drawService.js";
 import {Ellipse} from "../Ellipse.js";
 
 const canvas = document.querySelector("#canvas");
-const ctx = canvas.getContext('2d')
+
+
 const birdGravity = 0.30;
 const birdJump = -5;
+let birdImageframe = 0;
+const flapInterval = 70;
 
 
 export class Bird {
 
-    polyhedrons = []
-    ellipses = []
+    body = null
+    head = null
+    wing = null
+    eye1 = null
+    eye2 = null
+
+
+    wingStates = []
+
 
     x = 50
     y = canvas.height / 2 - 50
@@ -28,47 +38,39 @@ export class Bird {
 
 
     constructor() {
+        setInterval(function () {
+            birdImageframe++
+            if (birdImageframe === 4) birdImageframe = 0
+        }, flapInterval);
 
         const mainShiftX = -25
         const mainShiftY = -20
 
         const body = CreateParallelepiped(40, 30, 15, {bgColor: "yellow"})
         body.shift(mainShiftX, mainShiftY)
+        this.body = body
 
         const wing1 = CreateParallelepiped(20, 7, 10, {bgColor: "yellow"})
         wing1.shift(3 + mainShiftX, 25 + mainShiftY)
+        this.wing = wing1
 
-        const wing2 = CreateParallelepiped(20, 7, 10, {bgColor: "yellow"})
+        const wing2 = CreateParallelepiped(20, 10, 5, {bgColor: "yellow"})
         wing2.shift(3 + mainShiftX, 25 + mainShiftY)
-        
-        const wing3 = CreateParallelepiped(20, 7, 10, {bgColor: "yellow"})
-        wing3.shift(3 + mainShiftX, 25 + mainShiftY)
+
 
         const head = CreateParallelepiped(10, 10, 7, {bgColor: "red"})
         head.shift(45 + mainShiftX, 17 + mainShiftY)
+        this.head = head
 
-
-        const eye1 = new Ellipse(1.5, 3)
+        const eye1 = new Ellipse(2, 3)
         eye1.shift(50, 10 + mainShiftY)
+        this.eye1 = eye1
 
-        const eye2 = new Ellipse(1.5, 3)
+        const eye2 = new Ellipse(2, 3)
         eye2.shift(45, 15 + mainShiftY)
+        this.eye2 = eye2
 
-        this.polyhedrons = [body, wing2, head]
-        this.ellipses = [eye1, eye2]
-    }
-
-    #drawPolyhedrons(x = 0, y = 0, angleGrad) {
-        this.polyhedrons.forEach((polyhedron, index) => {
-            polyhedron.draw(x, y, angleGrad, index === 2 ? "red" : "yellow", "black")
-        })
-
-    }
-
-    #drawEllipses(x = 0, y = 0, angleGrad) {
-        this.ellipses.forEach((ellipse => {
-            ellipse.draw(x, y, 'black', 'black')
-        }))
+        this.wingStates = [wing1, wing2]
     }
 
 
@@ -76,59 +78,76 @@ export class Bird {
 
 
         // Rotate the bird up when it goes up
-        if (this.speed < 0) {
-
-            const eye1 = this.ellipses[0]
-            const eye2 = this.ellipses[1]
-            eye1.shift(46 - 33, -7 - 9)
-            eye2.shift(48 - 33, -15 - 9)
-
-            this.#drawPolyhedrons(this.x, this.y, -40)
-            this.#drawEllipses(this.x, this.y, -40)
-        }
-        // // Rotate the bird down when it goes down
         if (this.speed > 0) {
 
-            const eye1 = this.ellipses[0]
-            const eye2 = this.ellipses[1]
-            eye1.shift(31 - 13, 39 - 29)
-            eye2.shift(37 - 13, 39 - 29)
+            this.eye1.shift(46 - 29, -7 + 17)
+            this.eye2.shift(48 - 23, -15 + 25)
 
-            this.#drawPolyhedrons(this.x, this.y, 40)
-            this.#drawEllipses(this.x, this.y, 40)
+            this.wing = this.wingStates[0]
+            this.body.draw(this.x, this.y, 40, "yellow", "black")
+            this.head.draw(this.x, this.y, 40, "red", "black")
+            this.wing.draw(this.x, this.y, 40, "yellow", "black")
 
+            this.eye1.draw(this.x, this.y, 40, "black", "black")
+            this.eye2.draw(this.x, this.y, 40, "black", "black")
+        }
+        // // Rotate the bird down when it goes down
+        if (this.speed < 0) {
+
+
+            this.eye1.shift(31 - 15, -24)
+            this.eye2.shift(37 - 22, -15)
+
+
+            this.wing = this.wingStates[0]
+            this.body.draw(this.x, this.y, -40, "yellow", "black")
+            this.head.draw(this.x, this.y, -40, "red", "black")
+
+            this.eye1.draw(this.x, this.y, -40, "black", "black")
+            this.eye2.draw(this.x, this.y, -40, "black", "black")
 
             // bird flap animation
-            // if (birdImageframe % 3 === 0) {
-            //     ctx.drawImage(birdImg1, -this.width / 2, -this.height / 2, this.width, this.height);
-            // } else if (birdImageframe % 3 === 1) {
-            //     ctx.drawImage(birdImg2, -this.width / 2, -this.height / 2, this.width, this.height);
-            // } else if (birdImageframe % 3 === 2) {
-            //     ctx.drawImage(birdImg3, -this.width / 2, -this.height / 2, this.width, this.height);
-            // } else {
-            //     ctx.drawImage(birdImg4, -this.width / 2, -this.height / 2, this.width, this.height);
-            // }
+            switch (birdImageframe) {
+                case 0: {
+                    this.wing.draw(this.x - 3, this.y - 3, -20, "yellow", "black")
+                    break
+                }
+                case 1: {
+                    this.wing.draw(this.x - 1, this.y - 1, -30, "yellow", "black")
+                    break
+                }
+                case 3: {
+                    this.wing.draw(this.x, this.y, -50, "yellow", "black")
+                    break
+                }
+                case 4: {
+                    this.wing.draw(this.x - 1, this.y - 1, -30, "yellow", "black")
+                    break
+                }
+
+                default: {
+                    this.wing.draw(this.x - 3, this.y - 3, -20, "yellow", "black")
+                }
+            }
 
         }
         if (this.speed === 0) {
 
-            console.log(this.speed)
-            const eye1 = this.ellipses[0]
-            const eye2 = this.ellipses[1]
-            eye1.shift(13 + 6, -5 + 3)
-            eye2.shift(19 + 6, -11 + 3)
+            this.eye1.shift(13 + 6, -5 + 3)
+            this.eye2.shift(19 + 6, -11 + 3)
 
-            this.#drawPolyhedrons(this.x, this.y, 0)
-            this.#drawEllipses(this.x, this.y, 0)
+            this.wing = this.wingStates[1]
+            this.body.draw(this.x, this.y, 0, "yellow", "black")
+            this.head.draw(this.x, this.y, 0, "red", "black")
+            this.wing.draw(this.x, this.y, 0, "yellow", "black")
+
+            this.eye1.draw(this.x, this.y, 0, "black", "black")
+            this.eye2.draw(this.x, this.y, 0, "black", "black")
+
+
         }
 
     }
-
-    // shift(){
-    //     this.polyhedrons.forEach((polyhedron)=>{
-    //         polyhedron.shift(x,y)
-    //     })
-    // }
 
 
 }
