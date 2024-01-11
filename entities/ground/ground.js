@@ -25,10 +25,6 @@ export class Ground {
     constructor() {
     }
 
-    update() {
-        this.x -= this.speed
-        if (this.x <= -this.width) this.x = 0
-    }
 
     draw() {
 
