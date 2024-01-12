@@ -3,13 +3,24 @@ import {Store} from "./store.js";
 const playBtn = document.querySelector(".play-btn")
 const replayBtn = document.querySelector(".replay-btn")
 const form = document.querySelector('#form')
+const canvas = document.querySelector('#canvas')
 
 const user = {
     name: '',
 }
 
 export const setListeners = () => {
-
+    canvas.addEventListener("click", function () {
+        if (event.keyCode !== 32) return
+        const msg = {
+            method: 'jump',
+            sessionId: Store.sessionId,
+            data: {
+                name: Store.user.name
+            }
+        }
+        Store.socket.send(JSON.stringify(msg))
+    });
     document.addEventListener("keydown", function (event) {
         if (event.keyCode !== 32) return
         const msg = {

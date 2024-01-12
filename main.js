@@ -14,6 +14,8 @@ const groundHeight = 30;
 // let running = false;
 
 
+canvas.width = 320
+canvas.height = 480
 const backgroundImg = new Image();
 backgroundImg.crossOrigin = "Anonymous"
 backgroundImg.src = "https://assets.codepen.io/1290466/flappy-bird-bg-bottom.jpg?format=auto";
