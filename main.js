@@ -197,7 +197,8 @@ const Start = () => {
     if (!Store.sessionId) {
         Store.sessionId = Math.random().toString(36).substr(2, 9);
 
-        window.location.href = import.meta.env.VITE_CLIENT_ORIGIN + Store.sessionId;
+        // debugger
+        window.location.href = import.meta.env.VITE_CLIENT_ORIGIN + ':' + Store.sessionId;
     } else {
         Store.socket = new WebSocket(import.meta.env.VITE_SERVER_ORIGIN)
 
