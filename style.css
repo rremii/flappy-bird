@@ -101,9 +101,28 @@ label:nth-of-type(1) input {
     display: none !important;
 }
 
-.play-btn {
+.play-btn, .replay-btn {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+}
+
+.score-box {
+    color: #effbe3;
+    font-weight: bold;
+    font-size: 20px;
+    padding: 5px 10px;
+    cursor: pointer;
+    text-shadow: -2px 0 black, 0 2px black, 2px 0 black, 0 -2px black;
+    font-family: 'Press Start 2P', cursive, sans-serif;
+
+    position: absolute;
+    left: 50%;
+    top: 35px;
+    transform: translate(-50%, -50%);
+}
+
+.score {
+
 }

@@ -9,7 +9,6 @@ import {setListeners} from "./listeners.js";
 const canvas = document.querySelector("#canvas");
 const ctx = canvas?.getContext("2d", {willReadFrequently: true});
 const groundHeight = 30;
-
 // let score = 0;
 // let running = false;
 
@@ -233,6 +232,10 @@ const Start = () => {
                 }
                 case "start": {
                     socketService.start(payload)
+                    break
+                }
+                case "finish": {
+                    socketService.finish()
                 }
             }
         }
@@ -243,6 +246,8 @@ const Start = () => {
     }
 }
 Start()
+
+
 
 
 

@@ -7,7 +7,7 @@ const canvas = document.querySelector("#canvas");
 
 const birdGravity = 0.30;
 const birdJump = -5;
-let birdImageframe = 0;
+// let birdImageframe = 0;
 const flapInterval = 70;
 
 
@@ -19,9 +19,13 @@ export class Bird {
     eye1 = null
     eye2 = null
 
+    // flapInterval = null
+    flapFrame = 0
 
     wingStates = []
 
+    color = 'yellow'
+    name = ''
 
     x = 50
     y = canvas.height / 2 - 50
@@ -31,17 +35,16 @@ export class Bird {
     gravity = birdGravity
     jump = birdJump
 
-    update() {
-        this.speed += this.gravity;
-        this.y += this.speed;
-    }
-
 
     constructor() {
-        setInterval(function () {
-            birdImageframe++
-            if (birdImageframe === 4) birdImageframe = 0
-        }, flapInterval);
+
+        // const OnFlapChange = () => {
+        //     this.flapframe++
+        //     if (this.flapframe >= 5) this.flapframe = 0
+        // }
+        //
+        // this.flapInterval = setInterval(OnFlapChange, 60);
+        // console.log(this.flapInterval)
 
         const mainShiftX = -25
         const mainShiftY = -20
@@ -84,9 +87,9 @@ export class Bird {
             this.eye2.shift(48 - 23, -15 + 25)
 
             this.wing = this.wingStates[0]
-            this.body.draw(this.x, this.y, 40, "yellow", "black")
+            this.body.draw(this.x, this.y, 40, this.color, "black")
             this.head.draw(this.x, this.y, 40, "red", "black")
-            this.wing.draw(this.x, this.y, 40, "yellow", "black")
+            this.wing.draw(this.x, this.y, 40, this.color, "black")
 
             this.eye1.draw(this.x, this.y, 40, "black", "black")
             this.eye2.draw(this.x, this.y, 40, "black", "black")
@@ -100,33 +103,35 @@ export class Bird {
 
 
             this.wing = this.wingStates[0]
-            this.body.draw(this.x, this.y, -40, "yellow", "black")
+            this.body.draw(this.x, this.y, -40, this.color, "black")
             this.head.draw(this.x, this.y, -40, "red", "black")
 
             this.eye1.draw(this.x, this.y, -40, "black", "black")
             this.eye2.draw(this.x, this.y, -40, "black", "black")
 
+
+            console.log(this.flapFrame)
             // bird flap animation
-            switch (birdImageframe) {
+            switch (this.flapFrame) {
                 case 0: {
-                    this.wing.draw(this.x - 3, this.y - 3, -20, "yellow", "black")
+                    this.wing.draw(this.x - 3, this.y - 3, -20, this.color, "black")
                     break
                 }
                 case 1: {
-                    this.wing.draw(this.x - 1, this.y - 1, -30, "yellow", "black")
+                    this.wing.draw(this.x - 1, this.y - 1, -30, this.color, "black")
                     break
                 }
                 case 3: {
-                    this.wing.draw(this.x, this.y, -50, "yellow", "black")
+                    this.wing.draw(this.x, this.y, -50, this.color, "black")
                     break
                 }
                 case 4: {
-                    this.wing.draw(this.x - 1, this.y - 1, -30, "yellow", "black")
+                    this.wing.draw(this.x - 1, this.y - 1, -30, this.color, "black")
                     break
                 }
 
                 default: {
-                    this.wing.draw(this.x - 3, this.y - 3, -20, "yellow", "black")
+                    this.wing.draw(this.x - 3, this.y - 3, -20, this.color, "black")
                 }
             }
 
@@ -137,9 +142,9 @@ export class Bird {
             this.eye2.shift(19 + 6, -11 + 3)
 
             this.wing = this.wingStates[1]
-            this.body.draw(this.x, this.y, 0, "yellow", "black")
+            this.body.draw(this.x, this.y, 0, this.color, "black")
             this.head.draw(this.x, this.y, 0, "red", "black")
-            this.wing.draw(this.x, this.y, 0, "yellow", "black")
+            this.wing.draw(this.x, this.y, 0, this.color, "black")
 
             this.eye1.draw(this.x, this.y, 0, "black", "black")
             this.eye2.draw(this.x, this.y, 0, "black", "black")
