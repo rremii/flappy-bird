@@ -200,54 +200,59 @@ const Start = () => {
         // debugger
         window.location.href = import.meta.env.VITE_CLIENT_ORIGIN + ':' + Store.sessionId;
     } else {
-        Store.socket = new WebSocket(import.meta.env.VITE_SERVER_ORIGIN)
+        try {
 
-        Store.socket.onopen = function () {
+            Store.socket = new WebSocket(import.meta.env.VITE_SERVER_ORIGIN)
+
+            Store.socket.onopen = function () {
 
 
-            socketService.isRunning = false
-            const msg = {
-                method: "connection",
-                sessionId: Store.sessionId
+                socketService.isRunning = false
+                const msg = {
+                    method: "connection",
+                    sessionId: Store.sessionId
+                }
+                Store.socket.send(JSON.stringify(msg))
+
+
             }
-            Store.socket.send(JSON.stringify(msg))
 
-
-        }
-
-        Store.socket.onclose = function (event) {
-            if (event.wasClean) {
-                console.log('Соединение закрыто чисто');
-            } else {
-                console.log('Обрыв соединения'); // например, "убит" процесс сервера
+            Store.socket.onclose = function (event) {
+                if (event.wasClean) {
+                    console.log('Соединение закрыто чисто');
+                } else {
+                    console.log('Обрыв соединения'); // например, "убит" процесс сервера
+                }
+                console.log('Код: ' + event.code + ' причина: ' + event.reason);
             }
-            console.log('Код: ' + event.code + ' причина: ' + event.reason);
-        }
 
-        Store.socket.onmessage = function (event) {
-            const payload = JSON.parse(event.data)
+            Store.socket.onmessage = function (event) {
+                const payload = JSON.parse(event.data)
 
-            switch (payload.method) {
-                case "join": {
-                    socketService.join(payload)
-                    break
-                }
-                case "draw": {
-                    socketService.draw(payload)
-                    break
-                }
-                case "start": {
-                    socketService.start(payload)
-                    break
-                }
-                case "finish": {
-                    socketService.finish(payload)
+                switch (payload.method) {
+                    case "join": {
+                        socketService.join(payload)
+                        break
+                    }
+                    case "draw": {
+                        socketService.draw(payload)
+                        break
+                    }
+                    case "start": {
+                        socketService.start(payload)
+                        break
+                    }
+                    case "finish": {
+                        socketService.finish(payload)
+                    }
                 }
             }
-        }
 
-        Store.socket.onerror = function (error) {
-            console.log("Ошибка " + error.message);
+            Store.socket.onerror = function (error) {
+                console.log("Ошибка " + error.message);
+            }
+        } catch (e) {
+            alert(e)
         }
     }
 }
