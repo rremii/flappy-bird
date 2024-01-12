@@ -38,13 +38,6 @@ export class Bird {
 
     constructor() {
 
-        // const OnFlapChange = () => {
-        //     this.flapframe++
-        //     if (this.flapframe >= 5) this.flapframe = 0
-        // }
-        //
-        // this.flapInterval = setInterval(OnFlapChange, 60);
-        // console.log(this.flapInterval)
 
         const mainShiftX = -25
         const mainShiftY = -20

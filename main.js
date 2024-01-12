@@ -6,6 +6,7 @@ import {socketService} from "./services/socketService.js";
 import {Store} from "./store.js";
 import {setListeners} from "./listeners.js";
 
+const replayBtn = document.querySelector(".replay-btn")
 const canvas = document.querySelector("#canvas");
 const ctx = canvas?.getContext("2d", {willReadFrequently: true});
 const groundHeight = 30;
@@ -202,11 +203,16 @@ const Start = () => {
         Store.socket = new WebSocket("ws://localhost:5000/")
 
         Store.socket.onopen = function () {
+
+
+            socketService.isRunning = false
             const msg = {
                 method: "connection",
                 sessionId: Store.sessionId
             }
             Store.socket.send(JSON.stringify(msg))
+
+
         }
 
         Store.socket.onclose = function (event) {
@@ -235,7 +241,7 @@ const Start = () => {
                     break
                 }
                 case "finish": {
-                    socketService.finish()
+                    socketService.finish(payload)
                 }
             }
         }

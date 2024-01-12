@@ -52,6 +52,11 @@ export const setListeners = () => {
         const name = document.forms['form']['name'].value
         const color = document.forms['form']['color'].value
 
+        if (!localStorage.getItem('playerId')) {
+            const playerId = Math.random().toString(36).substr(2, 9);
+            window.localStorage.setItem("playerId", playerId)
+        }
+
         Store.user.name = name
 
         if (name.length === 0) return
@@ -59,11 +64,12 @@ export const setListeners = () => {
             method: 'join',
             sessionId: Store.sessionId,
             data: {
-                name, color
+                name, color, playerId: localStorage.getItem('playerId')
             }
         }
 
         playBtn.className = 'play-btn'
+        replayBtn.className = 'replay-btn hidden'
         form.className = 'hidden'
 
         Store.socket.send(JSON.stringify(msg))
