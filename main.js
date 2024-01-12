@@ -194,13 +194,12 @@ setListeners()
 
 const Start = () => {
 
-
     if (!Store.sessionId) {
         Store.sessionId = Math.random().toString(36).substr(2, 9);
 
-        window.location.href = "http://localhost:5173/" + Store.sessionId;
+        window.location.href = import.meta.env.VITE_CLIENT_ORIGIN + Store.sessionId;
     } else {
-        Store.socket = new WebSocket("ws://localhost:5000/")
+        Store.socket = new WebSocket(import.meta.env.VITE_SERVER_ORIGIN)
 
         Store.socket.onopen = function () {
 
