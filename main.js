@@ -18,10 +18,10 @@ const backgroundImg = new Image();
 backgroundImg.crossOrigin = "Anonymous"
 backgroundImg.src = "https://assets.codepen.io/1290466/flappy-bird-bg-bottom.jpg?format=auto";
 
-// // Sounds
-// const hitSound = new Audio("https://assets.codepen.io/1290466/flappy-bird-hit.mp3");
-// const pointSound = new Audio("https://assets.codepen.io/1290466/flappy-bird-point.mp3");
-// const backgroundMusic = new Audio("https://assets.codepen.io/1290466/flappy-bird-background.mp3");
+// Sounds
+const hitSound = new Audio("https://assets.codepen.io/1290466/flappy-bird-hit.mp3");
+const pointSound = new Audio("https://assets.codepen.io/1290466/flappy-bird-point.mp3");
+const backgroundMusic = new Audio("https://assets.codepen.io/1290466/flappy-bird-background.mp3");
 //
 
 //
@@ -185,7 +185,7 @@ export const drawBackground = function () {
     ctx.fillStyle = "#71c4cc";
     ctx.fillRect(0, 0, canvas.width, canvas.height - groundHeight);
     ctx.drawImage(backgroundImg, 0, canvas.height - backgroundImg.height);
-};
+}
 
 drawBackground();
 
@@ -244,6 +244,14 @@ const Start = () => {
                     }
                     case "finish": {
                         socketService.finish(payload)
+                        break
+                    }
+                    case "scoreSound": {
+                        socketService.makeScoreSound()
+                        break
+                    }
+                    case "deadSound": {
+                        socketService.makeDeadSound()
                     }
                 }
             }
