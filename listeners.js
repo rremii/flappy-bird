@@ -11,7 +11,6 @@ const user = {
 
 export const setListeners = () => {
     canvas.addEventListener("click", function () {
-        if (event.keyCode !== 32) return
         const msg = {
             method: 'jump',
             sessionId: Store.sessionId,
