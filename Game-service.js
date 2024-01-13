@@ -4,8 +4,6 @@ const Bird = require("./entities/bird/bird");
 const minGap = 130;
 const maxGap = 210;
 
-// const canvasWidth = 320
-// const canvasHeight = 400
 const canvasWidth = 320
 const canvasHeight = 480
 const groundHeight = 30;
@@ -52,8 +50,8 @@ class GameService {
             const bird = new Bird(name, color)
             this.birds.push(bird)
         })
-        console.log(players)
-        console.log(this.birds)
+        // console.log(players)
+        // console.log(this.birds)
 
         addPipeGate.call(this)
 
@@ -69,7 +67,7 @@ class GameService {
     }
 
 
-    update = () => {
+    update = (makeScoreSound, makeDeadSound) => {
         if (!this.isRunning) return
 
 
@@ -87,12 +85,14 @@ class GameService {
                 if (bird.x - 25 > gate.x + gate.width && !gate.passed) {
                     gate.passed = true;
                     this.score++;
+                    makeScoreSound()
                 }
                 const isBirdOver = bird.x - 25 + bird.width > x && bird.x - 25 < x + width
                 const isBirdBetween = (bird.y - 20) > y && (bird.y - 20 + bird.height) < y + height - 20
 
 
                 if (isBirdOver && !isBirdBetween) {
+                    makeDeadSound()
                     this.winner = this.birds[0]
                     this.birds = this.birds.filter(({name}) => name !== bird.name)
                 }

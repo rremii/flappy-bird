@@ -32,13 +32,28 @@ class SocketService {
         this.broadcastConnection(ws, response, aWss)
     }
 
+    makeDeadSound = (ws, msg, aWss) => {
+        const response = {
+            method: 'deadSound',
+            sessionId: msg.sessionId,
+        }
+        this.broadcastConnection(ws, response, aWss)
+    }
+    makeScoreSound = (ws, msg, aWss) => {
+        const response = {
+            method: 'scoreSound',
+            sessionId: msg.sessionId,
+        }
+        this.broadcastConnection(ws, response, aWss)
+    }
+
 
     draw = (ws, msg, aWss) => {
 
         this.imageframe++
         if (this.imageframe >= 5) this.imageframe = 0
 
-        const data = gameService.update()
+        const data = gameService.update(() => this.makeScoreSound(ws, msg, aWss), () => this.makeDeadSound(ws, msg, aWss))
 
         const response = {
             method: 'draw',
