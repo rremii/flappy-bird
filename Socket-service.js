@@ -61,7 +61,7 @@ class SocketService {
             data
         }
 
-        if (data.birds.length === 0) return this.finish(ws, response, aWss)
+        if (!data || !data?.birds || !data?.birds.length === 0) return this.finish(ws, response, aWss)
 
         this.broadcastConnection(ws, response, aWss)
     }
@@ -100,7 +100,6 @@ class SocketService {
 
         this.players = [...this.players, player]
 
-        console.log(this.players)
         const response = {
             method: 'join',
             sessionId: msg.sessionId,
@@ -111,7 +110,6 @@ class SocketService {
     }
 
     broadcastConnection = (ws, msg, aWss) => {
-        // console.log(msg)
         aWss.clients.forEach(client => {
             if (client.sessionId === msg.sessionId) {
                 client.send(JSON.stringify(msg))

@@ -13,7 +13,6 @@ module.exports = class Bird {
 
     flapFrame = 0
 
-    wingStates = []
 
     bgColor = "yellow"
     x = 50
