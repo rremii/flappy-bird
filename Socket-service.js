@@ -61,7 +61,7 @@ class SocketService {
             data
         }
 
-        if (!data || !data?.birds || !data?.birds.length === 0) return this.finish(ws, response, aWss)
+        if (!data || !data?.birds || data?.birds.length === 0) return this.finish(ws, response, aWss)
 
         this.broadcastConnection(ws, response, aWss)
     }
